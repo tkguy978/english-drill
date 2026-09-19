@@ -1,0 +1,831 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>문장 연습</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #d7e0da;
+    --card: #fcfdfc;
+    --ink: #13302b;
+    --soft: #5c7a72;
+    --rule: #c3d0c9;
+    --brass: #a2761c;
+    --kr: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --en: "Newsreader", Georgia, "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--kr);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .shell {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1rem 1.1rem 1.4rem;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .picker {
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 550;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--ink);
+    padding: 0.15rem 1.4rem 0.15rem 0.1rem;
+    border-radius: 0;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+                      linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: right 0.5rem center, right 0.22rem center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  .tally {
+    margin-left: auto;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--soft);
+  }
+
+  .tally b { color: var(--ink); font-weight: 600; }
+
+  .gear {
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--soft);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+  }
+
+  .gear:hover { color: var(--ink); border-color: var(--soft); }
+
+  /* ---------- progress ---------- */
+  .track {
+    height: 3px;
+    background: var(--rule);
+    position: relative;
+  }
+
+  .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: var(--ink);
+    transition: width 0.22s ease;
+  }
+
+  .round {
+    font-size: 0.82rem;
+    color: var(--soft);
+  }
+
+  /* ---------- card ---------- */
+  .card {
+    flex: 1;
+    min-height: 15rem;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.15rem;
+    padding: 2.2rem 1.6rem;
+    position: relative;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    border-radius: 2px;
+  }
+
+  .card:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+  .serial {
+    position: absolute;
+    top: 0.85rem;
+    right: 1rem;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--rule);
+  }
+
+  .flag {
+    position: absolute;
+    top: 0.8rem;
+    left: 1rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--brass);
+    display: none;
+  }
+
+  .card[data-flagged="1"] .flag { display: block; }
+
+  .prompt {
+    font-size: clamp(1.75rem, 6.2vw, 2.7rem);
+    font-weight: 600;
+    line-height: 1.34;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    margin: 0;
+  }
+
+  .answer {
+    margin: 0;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--en);
+    font-size: clamp(1.25rem, 4.4vw, 1.85rem);
+    line-height: 1.4;
+    max-width: 32ch;
+  }
+
+  .answer[hidden] { display: none; }
+
+  .nudge {
+    font-size: 0.85rem;
+    color: var(--soft);
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* reverse direction swaps the type roles */
+  .card[data-dir="en"] .prompt {
+    font-family: var(--en);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 5.4vw, 2.25rem);
+    max-width: 28ch;
+  }
+
+  .card[data-dir="en"] .answer {
+    font-family: var(--kr);
+    font-weight: 600;
+    max-width: 22ch;
+  }
+
+  /* ---------- actions ---------- */
+  .actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .btn {
+    flex: 1;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 550;
+    padding: 0.95rem 1rem;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1.5px solid var(--ink);
+  }
+
+  .btn:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+  .btn-next {
+    background: var(--ink);
+    color: var(--card);
+  }
+
+  .btn-again {
+    background: transparent;
+    color: var(--brass);
+    border-color: var(--brass);
+    flex: 0 0 8.5rem;
+  }
+
+  .btn-again[aria-pressed="true"] {
+    background: var(--brass);
+    color: var(--card);
+  }
+
+  .keys {
+    font-size: 0.78rem;
+    color: var(--soft);
+    text-align: center;
+  }
+
+  @media (hover: none) { .keys { display: none; } }
+
+  /* ---------- done screen ---------- */
+  .done {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2.2rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .done h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .done p { margin: 0; color: var(--soft); line-height: 1.6; max-width: 34ch; }
+
+  /* ---------- sheet ---------- */
+  .sheet {
+    position: fixed;
+    inset: 0;
+    background: rgba(19, 48, 43, 0.32);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 10;
+  }
+
+  .sheet[hidden] { display: none; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    width: 100%;
+    max-width: 34rem;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 1.5rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+
+  .panel h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .field > span { font-size: 0.9rem; font-weight: 550; }
+
+  .field small { color: var(--soft); line-height: 1.55; }
+
+  .seg { display: flex; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+
+  .seg button {
+    flex: 1;
+    font: inherit;
+    font-size: 0.92rem;
+    padding: 0.6rem 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--soft);
+    cursor: pointer;
+  }
+
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--card); font-weight: 550; }
+
+  textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    padding: 0.7rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--bg);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  textarea:focus-visible { outline: 2px solid var(--brass); outline-offset: 1px; }
+
+  .row { display: flex; gap: 0.6rem; }
+
+  .mini {
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 550;
+    padding: 0.65rem 1rem;
+    border-radius: 2px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .mini-solid { background: var(--ink); color: var(--card); }
+
+  .note { font-size: 0.85rem; color: var(--brass); min-height: 1.2em; }
+
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="shell">
+  <div class="bar">
+    <select class="picker" id="picker" aria-label="섹션"></select>
+    <span class="tally" id="tally"></span>
+    <button class="gear" id="openSheet">설정</button>
+  </div>
+
+  <div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="round" id="roundLabel"></div>
+  </div>
+
+  <button class="card" id="card">
+    <span class="flag" aria-hidden="true"></span>
+    <span class="serial" id="serial"></span>
+    <p class="prompt" id="prompt"></p>
+    <p class="nudge" id="nudge">탭하면 답이 보입니다</p>
+    <p class="answer" id="answer" hidden></p>
+  </button>
+
+  <div class="done" id="done" hidden>
+    <h2 id="doneTitle"></h2>
+    <p id="doneBody"></p>
+    <div class="row">
+      <button class="mini mini-solid" id="doneMain"></button>
+      <button class="mini" id="doneRestart">처음부터</button>
+    </div>
+  </div>
+
+  <div class="actions" id="actions">
+    <button class="btn btn-again" id="again" aria-pressed="false">다시 볼 문장</button>
+    <button class="btn btn-next" id="next">다음</button>
+  </div>
+
+  <div class="keys">스페이스로 답 보기와 다음, ← → 로 이동, D 키로 다시 볼 문장 표시</div>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="설정">
+    <h2>설정</h2>
+
+    <div class="field">
+      <span>방향</span>
+      <div class="seg" id="dirSeg">
+        <button data-dir="ko" aria-pressed="true">한글 보고 영어 말하기</button>
+        <button data-dir="en" aria-pressed="false">영어 보고 한글 말하기</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span>순서</span>
+      <div class="seg" id="orderSeg">
+        <button data-shuffle="0" aria-pressed="true">교재 순서</button>
+        <button data-shuffle="1" aria-pressed="false">섞기</button>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="field">
+      <span>문장 추가</span>
+      <small>구글 시트나 엑셀에서 셀을 복사해 그대로 붙여넣으세요. 열 순서는 번호, 책, 섹션, 한글, 영어입니다. 첫 줄이 머리글이면 알아서 건너뜁니다.</small>
+      <textarea id="paste" placeholder="101&#9;1&#9;unit02&#9;...&#9;..." spellcheck="false"></textarea>
+      <div class="row">
+        <button class="mini mini-solid" id="doImport">추가하기</button>
+        <button class="mini" id="clearExtra">추가한 문장 비우기</button>
+      </div>
+      <div class="note" id="note"></div>
+    </div>
+
+    <hr>
+
+    <button class="mini mini-solid" id="closeSheet">닫기</button>
+  </div>
+</div>
+
+<script>
+// ---------------------------------------------------------------- 원본 데이터
+const BUNDLED = `번호	책	섹션	한글	영어
+1	1	unit01	알고 싶어	I want to know.
+2	1	unit01	여기서 기다리고 싶어	I want to wait here.
+3	1	unit01	난 너를 내일 만나고 싶어	I want to meet you tomorrow.
+4	1	unit01	책 읽고 싶어	I want to read a book.
+5	1	unit01	TV 보고 싶어	I want to watch TV.
+6	1	unit01	집에 가고 싶어	I want to go home.
+7	1	unit01	화장실에 가고 싶어	I want to go to the bathroom/toilet/restroom.
+8	1	unit01	이거 하고 싶어	I want to do this/it.
+9	1	unit01	숙제 하고 싶어	I want to do my homework.
+10	1	unit01	엄마한테 전화하고 싶어	I want to call my mother.
+11	1	unit01	영어 공부하고 싶어	I want to study English.
+12	1	unit01	영어 배우고 싶어	I want to learn English.
+13	1	unit01	뭔가를 먹고 싶어	I want to eat something.
+14	1	unit01	콜라를 마시고 싶어	I want to drink some coke.
+15	1	unit01	동생에게 물어보고 싶어	I want to ask my brother.
+16	1	unit01	내 책을 가져오고 싶어	I want to bring my book.
+17	1	unit01	이거 가져가고 싶어	I want to take it.
+18	1	unit01	이거 사고 싶어	I want to buy it.
+19	1	unit01	이거 입고 싶어	I want to wear it.
+20	1	unit01	이거 해보고 싶어	I want to try it.
+21	1	unit01	이거 쓰고 싶어(사용)	I want to use it.
+22	1	unit01	그거 쓰고 싶어(글씨)	I want to write it.
+23	1	unit01	이거 가지고 싶어	I want to have it.
+24	1	unit01	이거 가지고 있고 싶어(보관)	I want to keep it.
+25	1	unit01	너의 펜 빌리고 싶어	I want to borrow your pen.
+26	1	unit01	널 도와주고 싶어	I want to help you.
+27	1	unit01	그거 찾고 싶어	I want to find it.
+28	1	unit01	그거 생각해 보고 싶어	I want to think about it.
+29	1	unit01	고맙다고 말하고 싶어요	I want to say thank you/thanks.
+30	1	unit01	미안하다고 말하고 싶어	I want to say sorry/I'm sorry.
+31	1	unit01	여기에서 일하고 싶어	I want to work here.
+32	1	unit01	내 친구한테 문자하고 싶어	I want to text my friend.
+33	1	unit01	핸드폰으로 게임하고 싶어	I want to play a game on my phone.
+34	1	unit01	셀카 찍고 싶어	I want to take a selfie.
+35	1	unit01	사진 찍고 싶어	I want to take a picture/photo.
+36	1	unit01	여기 저기 가고 싶어	I want to go heare and there.
+37	1	unit01	모든 곳에 가고 싶어	I want to go everywhere.
+38	1	unit01	여행하고 싶어. 그리고 세계를 보고 싶어	I want to travel and see the world.
+39	1	unit01	좋은 시간을 보내고 싶어	I want to have a good time.
+40	1	unit01	큰 꿈을 가지고 싶어	I want to have big dreams.
+41	1	unit01	여기 앉기 싫어	I don't want to sit here.
+42	1	unit01	아무 말 하고 싶지 않아	I don't want to say anything.
+43	1	unit01	이번 주말엔 나가고 싶지 않아	I don't want to go out this weekend.
+44	1	unit01	지금 나가기 싫어	I don't want to go out now.
+45	1	unit01	지금 여기다 놓고 싶지 않아	I don't want to put it here.
+46	1	unit01	(이거) 하기 싫어	I don't want to do it.
+47	1	unit01	아무것도 하기 싫어	I don't want to do anything.
+48	1	unit01	이거 버리기 싫어. 가지고 있고 싶어	I don't want to throw it away. I want to keep it.
+49	1	unit01	아무것도 먹고 싶지 않아	I don't want to eat anything.
+50	1	unit01	지금 결정하고 싶지 않아	I don't want to decide now.
+51	1	unit01	걔랑 얘기하고 싶지 않아	I don't want to speak/talk to him.
+52	1	unit01	여기 있고 싶지 않아	I don't want to stay here.
+53	1	unit01	불평하고 싶지 않아	I don't want to complain.
+54	1	unit01	그거 기억하고 싶지 않아	I don't want to remember it.
+55	1	unit01	이거 듣기 싫어	I don't want to listen to it.
+56	1	unit01	그거 보고 싶지 않아	I don't want to see it.
+57	1	unit01	알고 싶지 않아	I don't want to know.
+58	1	unit01	그거 생각하기 싫어	I don't want to think about it.
+59	1	unit01	이거 그 애한테 주기 싫어	I don't want to give it to him.
+60	1	unit01	내일은 일찍 일어나고 싶지 않아	I don't want to get up early tomorrow.
+61	1	unit01	여기 올래?	Do you want come here?
+62	1	unit01	몇 시에 올래? 언제 올래?	What time do you want to come? When do you want to come?
+63	1	unit01	지금 갈래? 언제 갈래?	Do you want to go now? When do you want to go?
+64	1	unit01	어디 갈래?	Where do you want to go?
+65	1	unit01	뭐 할래?	What do you want to do?
+66	1	unit01	이거 먹을래?	Do you want to eat this?
+67	1	unit01	뭐 먹을래?	What do you want to eat?
+68	1	unit01	뭐 마실래?	What do you want to drink?
+69	1	unit01	우유 마실래?	Do you want to drink some milk?
+70	1	unit01	어느 거 살래?	Which one do you want to buy?
+71	1	unit01	이거 살래 아님 저거 살래?	Do you want to buy this or that?
+72	1	unit01	이거 먹어 볼래?	Do you want to try it?
+73	1	unit01	너도 올래?	Do you want to come,too?
+74	1	unit01	지금 나갈래? 언제 나갈래?	Do you want to go out now? When do you want to go out?
+75	1	unit01	전화 다시 할래?	Do you want to call me back?
+76	1	unit01	10분 있다가 전화 다시 할래?	Do you want to call me back in ten minutes?
+77	1	unit01	나랑 내일 저녁 먹을래?	Do you want eat dinner with me tomorrow?
+78	1	unit01	어디서 만날래? 몇 시에 만날래?	Where do you want to meet? What time do you wnat to meet?
+79	1	unit01	뭐 볼래? 이거 볼래?	What do you want to see? Do you want see it?
+80	1	unit01	내 우산 빌릴래?	Do you want to borrow my umbrella?
+81	1	unit01	그거 생각해 볼래?	Do you want to think about it?
+82	1	unit01	이 책 갖고 싶니?	Do you want to have this book?
+83	1	unit01	뭐 갖고 싶어?	What do you want to have?
+84	1	unit01	잠깐만 기다릴래?	Do you want to wait for a minute?
+85	1	unit01	나랑 같이 갈래?	Do you want to go with me?
+86	1	unit01	뭐 말하고 싶은데?	What do you want to say?
+87	1	unit01	어느 거 쓸래?	Which one do you want to use?
+88	1	unit01	어디 앉을래?	Where do you want to sit?
+89	1	unit01	이거 입어볼래?	Do you want to try it on?
+90	1	unit01	이거 해볼래요?	Do you want to try it?
+91	1	unit01	나랑 셀카 찍을래?	Do you want to take a selfie with me?
+92	1	unit01	나중에 나한테 문자 할래?	Do you want to tet me later?
+93	1	unit01	어디 여행하고 싶어?	Where do you wnat to travel?
+94	1	unit01	어디에서 일하고 싶어?	Where do you want to work?
+95	1	unit01	사진 찍고 싪어?	Do you want to take a picture?
+96	1	unit01	어느 거 다운받고 싶어?	Which one do you want to download?
+97	1	unit01	어느 영화 볼래?	Which movie do you want see?
+98	1	unit01	이번 여름에 어디 가고 싶어?	Where do you want go this summer?
+99	1	unit01	거기에 얼마나 오래 있고 싶어?	How long do you want to stay there?
+100	1	unit01	이거 어떻게 하고 싶어?	How do you want to do it?`;
+
+// ---------------------------------------------------------------- 저장소
+// window.storage 가 있으면 그걸 쓰고, 직접 호스팅할 때는 localStorage 로 내려간다.
+const store = (function () {
+  const w = window;
+  if (w.storage && typeof w.storage.get === "function") {
+    return {
+      async get(k) { try { const r = await w.storage.get(k); return r ? r.value : null; } catch (e) { return null; } },
+      async set(k, v) { try { await w.storage.set(k, v); } catch (e) {} }
+    };
+  }
+  try {
+    const probe = "__probe__";
+    w.localStorage.setItem(probe, "1");
+    w.localStorage.removeItem(probe);
+    return {
+      async get(k) { return w.localStorage.getItem(k); },
+      async set(k, v) { try { w.localStorage.setItem(k, v); } catch (e) {} }
+    };
+  } catch (e) {
+    const mem = new Map();
+    return {
+      async get(k) { return mem.has(k) ? mem.get(k) : null; },
+      async set(k, v) { mem.set(k, v); }
+    };
+  }
+})();
+
+// ---------------------------------------------------------------- 파싱
+function parseTsv(text) {
+  const out = [];
+  const lines = String(text).split(/\r?\n/);
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = line.split("\t").map(c => c.trim());
+    if (cells.length < 5) continue;
+    const [no, book, section, ko, en] = cells;
+    if (!ko || !en) continue;
+    if (section === "섹션" || no === "번호") continue;  // 머리글
+    out.push({ no, book, section, ko, en });
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------- 상태
+const S = {
+  rows: [],
+  dir: "ko",
+  shuffle: false,
+  section: "",
+  queue: [],
+  at: 0,
+  again: [],
+  round: 1,
+  shown: false
+};
+
+const $ = id => document.getElementById(id);
+
+// ---------------------------------------------------------------- 세션
+function sectionsOf(rows) {
+  const seen = [];
+  for (const r of rows) {
+    const key = r.book + " · " + r.section;
+    if (!seen.includes(key)) seen.push(key);
+  }
+  return seen;
+}
+
+function cardsOf(sectionKey) {
+  return S.rows.filter(r => (r.book + " · " + r.section) === sectionKey);
+}
+
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startRound(cards, roundNo) {
+  S.queue = S.shuffle ? shuffled(cards) : cards.slice();
+  S.at = 0;
+  S.again = [];
+  S.round = roundNo;
+  S.shown = false;
+  render();
+}
+
+function startSection(key) {
+  S.section = key;
+  startRound(cardsOf(key), 1);
+}
+
+// ---------------------------------------------------------------- 렌더
+function render() {
+  const total = S.queue.length;
+  const card = S.queue[S.at];
+
+  if (!card) { renderDone(); return; }
+
+  $("done").hidden = true;
+  $("card").hidden = false;
+  $("actions").hidden = false;
+
+  $("tally").innerHTML = "<b>" + (S.at + 1) + "</b> / " + total;
+  $("fill").style.width = (S.at / total * 100) + "%";
+  $("roundLabel").textContent = S.round === 1
+    ? "전체 " + total + "문장"
+    : S.round + "회차 · 다시 볼 문장 " + total + "개";
+
+  $("serial").textContent = "#" + card.no;
+  $("card").dataset.dir = S.dir;
+  $("card").dataset.flagged = S.again.includes(card) ? "1" : "0";
+
+  $("prompt").textContent = S.dir === "ko" ? card.ko : card.en;
+  $("answer").textContent = S.dir === "ko" ? card.en : card.ko;
+  $("answer").hidden = !S.shown;
+  $("nudge").hidden = S.shown;
+
+  $("again").setAttribute("aria-pressed", S.again.includes(card) ? "true" : "false");
+}
+
+function renderDone() {
+  $("card").hidden = true;
+  $("actions").hidden = true;
+  $("done").hidden = false;
+  $("fill").style.width = "100%";
+  $("tally").innerHTML = "<b>" + S.queue.length + "</b> / " + S.queue.length;
+  $("roundLabel").textContent = "";
+
+  const left = S.again.length;
+  if (left) {
+    $("doneTitle").textContent = "한 바퀴 끝났습니다";
+    $("doneBody").textContent = "다시 볼 문장으로 표시한 " + left + "개가 남았습니다. 이것만 모아서 한 바퀴 더 돌리거나, 처음부터 전체를 다시 볼 수 있습니다.";
+    $("doneMain").textContent = "표시한 " + left + "개만 연습";
+    $("doneMain").hidden = false;
+  } else {
+    $("doneTitle").textContent = "전부 끝났습니다";
+    $("doneBody").textContent = "다시 볼 문장으로 표시한 게 없습니다. 섹션을 바꾸거나 처음부터 한 바퀴 더 돌리세요.";
+    $("doneMain").hidden = true;
+  }
+}
+
+// ---------------------------------------------------------------- 동작
+function reveal() {
+  if (S.shown) return false;
+  S.shown = true;
+  render();
+  return true;
+}
+
+function advance() {
+  S.at += 1;
+  S.shown = false;
+  render();
+}
+
+function back() {
+  if (S.at === 0) return;
+  S.at -= 1;
+  S.shown = false;
+  render();
+}
+
+function toggleAgain() {
+  const card = S.queue[S.at];
+  if (!card) return;
+  const i = S.again.indexOf(card);
+  if (i === -1) S.again.push(card); else S.again.splice(i, 1);
+  render();
+}
+
+// ---------------------------------------------------------------- 설정 저장
+async function saveSettings() {
+  await store.set("settings", JSON.stringify({ dir: S.dir, shuffle: S.shuffle, section: S.section }));
+}
+
+function paintSegs() {
+  for (const b of $("dirSeg").children) {
+    b.setAttribute("aria-pressed", b.dataset.dir === S.dir ? "true" : "false");
+  }
+  for (const b of $("orderSeg").children) {
+    b.setAttribute("aria-pressed", (b.dataset.shuffle === "1") === S.shuffle ? "true" : "false");
+  }
+}
+
+function paintPicker() {
+  const keys = sectionsOf(S.rows);
+  $("picker").innerHTML = keys.map(k => '<option value="' + k + '">' + k + "</option>").join("");
+  $("picker").value = keys.includes(S.section) ? S.section : keys[0];
+  S.section = $("picker").value;
+}
+
+// ---------------------------------------------------------------- 초기화
+async function boot() {
+  const extra = await store.get("extra");
+  S.rows = parseTsv(BUNDLED).concat(extra ? parseTsv(extra) : []);
+
+  const saved = await store.get("settings");
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      if (s.dir) S.dir = s.dir;
+      S.shuffle = !!s.shuffle;
+      if (s.section) S.section = s.section;
+    } catch (e) {}
+  }
+
+  paintPicker();
+  paintSegs();
+  startSection(S.section);
+}
+
+// ---------------------------------------------------------------- 이벤트
+$("card").addEventListener("click", () => { if (!reveal()) advance(); });
+$("next").addEventListener("click", () => { if (!reveal()) advance(); });
+$("again").addEventListener("click", toggleAgain);
+$("doneRestart").addEventListener("click", () => startRound(cardsOf(S.section), 1));
+$("doneMain").addEventListener("click", () => startRound(S.again, S.round + 1));
+
+$("picker").addEventListener("change", e => { startSection(e.target.value); saveSettings(); });
+
+$("openSheet").addEventListener("click", () => { $("sheet").hidden = false; $("note").textContent = ""; });
+$("closeSheet").addEventListener("click", () => { $("sheet").hidden = true; });
+$("sheet").addEventListener("click", e => { if (e.target === $("sheet")) $("sheet").hidden = true; });
+
+$("dirSeg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  S.dir = b.dataset.dir;
+  paintSegs();
+  S.shown = false;
+  render();
+  saveSettings();
+});
+
+$("orderSeg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  S.shuffle = b.dataset.shuffle === "1";
+  paintSegs();
+  startRound(cardsOf(S.section), 1);
+  saveSettings();
+});
+
+$("doImport").addEventListener("click", async () => {
+  const text = $("paste").value;
+  const rows = parseTsv(text);
+  if (!rows.length) {
+    $("note").textContent = "읽어들인 문장이 없습니다. 열이 탭으로 구분되어 있고 한글과 영어 칸이 모두 채워져 있는지 확인하세요.";
+    return;
+  }
+  const prev = await store.get("extra");
+  const merged = (prev ? prev + "\n" : "") + text.trim();
+  await store.set("extra", merged);
+  S.rows = parseTsv(BUNDLED).concat(parseTsv(merged));
+  paintPicker();
+  $("paste").value = "";
+  $("note").textContent = rows.length + "문장을 추가했습니다. 위쪽 섹션 목록에서 고르세요.";
+});
+
+$("clearExtra").addEventListener("click", async () => {
+  await store.set("extra", "");
+  S.rows = parseTsv(BUNDLED);
+  S.section = "";
+  paintPicker();
+  startSection(S.section);
+  $("note").textContent = "추가한 문장을 비웠습니다. 원본 100문장은 그대로 있습니다.";
+});
+
+document.addEventListener("keydown", e => {
+  if (!$("sheet").hidden) return;
+  if (e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
+  if (e.code === "Space" || e.key === "Enter") {
+    e.preventDefault();
+    if (!$("done").hidden) return;
+    if (!reveal()) advance();
+  } else if (e.key === "ArrowRight") {
+    if (!$("done").hidden) return;
+    if (!reveal()) advance();
+  } else if (e.key === "ArrowLeft") {
+    back();
+  } else if (e.key === "d" || e.key === "D") {
+    toggleAgain();
+  }
+});
+
+boot();
+</script>
