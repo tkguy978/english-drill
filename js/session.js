@@ -64,7 +64,13 @@ export function startReview(s) {
   return { ...s, rows, at: 0, revealed: false, reviewing: true };
 }
 
+// 전체 목록으로 돌아간다. startNo 가 있으면 그 문장부터, 없으면 처음부터.
+export function exitReview(s, startNo = null) {
+  const found = startNo === null ? -1 : s.all.findIndex(r => r.no === startNo);
+  return { ...s, rows: s.all, at: Math.max(found, 0), revealed: false, reviewing: false };
+}
+
 // 표시는 남겨 두고 전체를 처음부터.
 export function restart(s) {
-  return { ...s, rows: s.all, at: 0, revealed: false, reviewing: false };
+  return exitReview(s);
 }

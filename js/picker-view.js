@@ -7,7 +7,7 @@ function progressLabel(bookId, sectionId) {
   const saved = loadProgress(bookId, sectionId);
   if (!saved) return "";
   const where = saved.no === null ? "한 바퀴 완료" : `${saved.at} / ${saved.total}`;
-  return saved.marked.length ? `${where} · 표시 ${saved.marked.length}` : where;
+  return saved.marked.length ? `${where} · 헷갈림 ${saved.marked.length}` : where;
 }
 
 export function renderPicker(manifest, { notice } = {}) {

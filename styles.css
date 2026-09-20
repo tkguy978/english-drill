@@ -19,6 +19,10 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--kr);
+  /* 한글은 기본값이면 단어 중간에서 끊긴다. 띄어쓰기 단위로 끊고,
+     한 단어가 줄보다 길 때만 어쩔 수 없이 쪼갠다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -100,19 +104,25 @@ a { color: inherit; }
   gap: 0.9rem;
 }
 
-.bar { display: flex; align-items: center; gap: 0.7rem; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem; }
 
 .back { font-size: 0.9rem; color: var(--soft); text-decoration: none; }
 .back:hover { color: var(--ink); }
 
-.mode {
+.chip {
+  font: inherit;
   font-size: 0.78rem;
   font-weight: 550;
+  white-space: nowrap;
   color: var(--accent);
+  background: transparent;
   border: 1px solid var(--accent);
   border-radius: 999px;
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
 }
+
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--card); }
 
 .tally {
   margin-left: auto;
@@ -214,11 +224,18 @@ a { color: inherit; }
 /* 좁은 화면에서는 버튼이 다음 줄로 넘어간다. */
 .actions, .row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
+/* 버튼(<button>)은 글자를 세로 가운데에 놓지만 링크(<a>)는 위에서부터 쌓는다.
+   둘을 나란히 두므로 직접 가운데로 맞춘다. */
 .btn {
   flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font: inherit;
   font-size: 1rem;
   font-weight: 550;
+  /* 버튼 글자는 줄을 바꾸지 않는다. 자리가 모자라면 버튼이 다음 줄로 넘어간다. */
+  white-space: nowrap;
   text-align: center;
   text-decoration: none;
   padding: 0.95rem 1rem;
@@ -228,6 +245,9 @@ a { color: inherit; }
   color: var(--ink);
   cursor: pointer;
 }
+
+/* 완료 화면 버튼은 글자 길이대로 두고, 넘치면 줄이 바뀐다. */
+.done .row .btn { flex: 1 1 auto; }
 
 .actions #prev { flex: 0 0 5.5rem; }
 .actions #mark { flex: 1 1 7rem; }
