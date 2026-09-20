@@ -8,17 +8,17 @@ const status = document.getElementById("status");
 
 async function boot() {
   const params = new URLSearchParams(location.search);
-  const bookId = params.get("book");
+  const sourceId = params.get("source");
   const sectionId = params.get("section");
 
   const manifest = await loadManifest();
 
-  if (!bookId && !sectionId) {
+  if (!sourceId && !sectionId) {
     renderPicker(manifest);
     return;
   }
 
-  const found = findSection(manifest, bookId, sectionId);
+  const found = findSection(manifest, sourceId, sectionId);
   if (!found) {
     renderPicker(manifest, { notice: "요청한 섹션을 찾을 수 없습니다. 아래에서 골라 주세요." });
     return;
@@ -26,7 +26,7 @@ async function boot() {
 
   let rows;
   try {
-    rows = await loadSection(found.book, found.section);
+    rows = await loadSection(found.source, found.section);
   } catch (err) {
     console.error(err);
     renderPicker(manifest, { notice: "섹션 문장을 불러오지 못했습니다. 다른 섹션을 골라 주세요." });

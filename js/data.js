@@ -8,10 +8,10 @@ async function fetchText(name) {
   return res.text();
 }
 
-// 책 > 그룹(에피소드) > 섹션(장면) 세 단계다.
+// 자료 > 그룹(에피소드) > 섹션(장면) 세 단계다.
 function assertManifest(m) {
-  const ok = m && Array.isArray(m.books) && m.books.every(b =>
-    b && b.id && b.title && Array.isArray(b.groups) && b.groups.every(gr =>
+  const ok = m && Array.isArray(m.sources) && m.sources.every(src =>
+    src && src.id && src.title && Array.isArray(src.groups) && src.groups.every(gr =>
       gr && gr.id && gr.title && Array.isArray(gr.sections) && gr.sections.every(s =>
         s && s.id && s.title && s.file)));
   if (!ok) throw new Error("manifest.json 형식이 올바르지 않습니다");
@@ -22,17 +22,17 @@ export async function loadManifest() {
   return assertManifest(JSON.parse(await fetchText("manifest.json")));
 }
 
-export function findSection(manifest, bookId, sectionId) {
-  const book = manifest.books.find(b => b.id === bookId);
-  if (!book) return null;
-  for (const group of book.groups) {
+export function findSection(manifest, sourceId, sectionId) {
+  const source = manifest.sources.find(src => src.id === sourceId);
+  if (!source) return null;
+  for (const group of source.groups) {
     const section = group.sections.find(s => s.id === sectionId);
-    if (section) return { book, group, section };
+    if (section) return { source, group, section };
   }
   return null;
 }
 
-// 헤더 없음, 탭 구분, 열 순서: 번호 / 책 / 섹션 / 한글 / 영어
+// 헤더 없음, 탭 구분, 열 순서: 번호 / 자료 / 섹션 / 한글 / 영어
 export function parseTsv(text) {
   const rows = [];
   const lines = text.replace(/^﻿/, "").split(/\r?\n/);
@@ -43,15 +43,15 @@ export function parseTsv(text) {
       console.warn(`TSV ${i + 1}번째 줄을 건너뜁니다:`, line);
       return;
     }
-    const [no, book, section, ko, en] = cells;
-    rows.push({ no, book, section, ko, en });
+    const [no, source, section, ko, en] = cells;
+    rows.push({ no, source, section, ko, en });
   });
   return rows;
 }
 
-export async function loadSection(book, section) {
+export async function loadSection(source, section) {
   const rows = parseTsv(await fetchText(section.file))
-    .filter(r => r.book === book.id && r.section === section.id);
-  if (!rows.length) throw new Error(`${section.file} 에 ${book.id}/${section.id} 문장이 없습니다`);
+    .filter(r => r.source === source.id && r.section === section.id);
+  if (!rows.length) throw new Error(`${section.file} 에 ${source.id}/${section.id} 문장이 없습니다`);
   return rows;
 }

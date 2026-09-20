@@ -59,12 +59,24 @@ a { color: inherit; }
   margin: 0 0 1.4rem;
 }
 
-.book h2 {
+.source h2 {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--soft);
   margin: 0 0 0.5rem;
 }
+
+/* 맨 위 "이어서 하기" 묶음 */
+.recent {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  margin: 0 0 1.4rem;
+}
+
+.recent .sections { border-top: none; }
+
+.recent .section-link { padding-left: 1rem; }
 
 /* 에피소드 묶음. 연습을 시작한 묶음만 펼친 채로 시작한다. */
 .group {

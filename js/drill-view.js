@@ -6,7 +6,7 @@ import {
 } from "./session.js";
 import { loadProgress, saveProgress } from "./store.js";
 
-export function renderDrill({ book, group, section }, rows, { review = false } = {}) {
+export function renderDrill({ source, group, section }, rows, { review = false } = {}) {
   const root = document.getElementById("drill");
   const $ = id => document.getElementById(id);
   const el = {
@@ -31,7 +31,7 @@ export function renderDrill({ book, group, section }, rows, { review = false } =
     restart: $("restart"),
   };
 
-  const saved = loadProgress(book.id, section.id);
+  const saved = loadProgress(source.id, section.id);
   let state = createSession(rows, {
     startNo: saved ? saved.no : null,
     marked: saved ? saved.marked : [],
@@ -57,7 +57,7 @@ export function renderDrill({ book, group, section }, rows, { review = false } =
       position = { no: row ? row.no : null, at: isDone(state) ? rows.length : state.at + 1 };
     }
     if (!position) return;
-    saveProgress(book.id, section.id, { ...position, total: rows.length, marked: state.marked });
+    saveProgress(source.id, section.id, { ...position, total: rows.length, marked: state.marked });
   }
 
   // 칩 하나가 두 역할을 한다. 전체를 돌 때는 헷갈림 묶음으로 들어가는 문이고,
@@ -159,8 +159,8 @@ export function renderDrill({ book, group, section }, rows, { review = false } =
     }
   });
 
-  document.title = `${group.title} ${section.title} · ${book.title} — 영어 문장 연습`;
-  el.title.textContent = `${book.title} · ${group.title} · ${section.title}`;
+  document.title = `${group.title} ${section.title} · ${source.title} — 영어 문장 연습`;
+  el.title.textContent = `${source.title} · ${group.title} · ${section.title}`;
   root.hidden = false;
   paint();
   persist();
