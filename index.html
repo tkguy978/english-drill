@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>영어 문장 연습</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <p class="status" id="status">불러오는 중…</p>
+    <noscript><p class="status">이 페이지는 JavaScript 가 켜져 있어야 동작합니다.</p></noscript>
+
+    <section class="picker" id="picker" hidden>
+      <h1>영어 문장 연습</h1>
+      <p class="lede">한글 문장을 보고 영어로 말해 본 뒤, 눌러서 정답을 확인하세요.</p>
+      <p class="notice" id="picker-notice" role="alert" hidden></p>
+      <div id="picker-books"></div>
+    </section>
+
+    <section class="drill" id="drill" hidden>
+      <header class="bar">
+        <a class="back" href="./">← 섹션 목록</a>
+        <span class="mode" id="mode" hidden>헷갈린 문장</span>
+        <span class="tally" id="tally"></span>
+      </header>
+      <h1 class="drill-title" id="drill-title"></h1>
+      <div class="track"><div class="fill" id="fill"></div></div>
+
+      <button type="button" class="card" id="card">
+        <span class="flag" aria-hidden="true"></span>
+        <span class="serial" id="serial"></span>
+        <span class="prompt" id="prompt"></span>
+        <!-- 안내 문구와 정답을 같은 칸에 겹쳐 둔다. 정답이 나와도 칸 높이가 그대로라 한글이 움직이지 않는다. -->
+        <span class="reveal">
+          <span class="nudge" id="nudge">영어로 말해 본 뒤 누르면 정답이 보입니다</span>
+          <span class="answer" id="answer" lang="en"></span>
+        </span>
+      </button>
+
+      <div class="actions" id="actions">
+        <button type="button" class="btn" id="prev">이전</button>
+        <button type="button" class="btn btn-mark" id="mark" aria-pressed="false">헷갈림</button>
+        <button type="button" class="btn btn-primary" id="next">정답 보기</button>
+      </div>
+
+      <div class="done" id="done" hidden>
+        <h2 id="done-title" tabindex="-1"></h2>
+        <p id="done-body"></p>
+        <div class="row">
+          <button type="button" class="btn btn-primary" id="review" hidden></button>
+          <button type="button" class="btn" id="restart">처음부터</button>
+          <a class="btn" href="./">다른 섹션</a>
+        </div>
+      </div>
+
+      <p class="keys">Space · Enter · → 정답 보기와 다음 &nbsp;/&nbsp; ← 이전 &nbsp;/&nbsp; D 헷갈림 표시</p>
+    </section>
+  </main>
+</body>
+</html>

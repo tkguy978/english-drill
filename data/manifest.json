@@ -1,0 +1,11 @@
+{
+  "books": [
+    {
+      "id": "friends",
+      "title": "Friends",
+      "sections": [
+        { "id": "s01e01_01", "title": "S01E01 · 장면 1", "file": "friends_s01e01_scene01.tsv" }
+      ]
+    }
+  ]
+}

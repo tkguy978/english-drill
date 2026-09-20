@@ -1,0 +1,272 @@
+:root {
+  --bg: #d7e0da;
+  --card: #fcfdfc;
+  --ink: #13302b;
+  --soft: #5c7a72;
+  --rule: #c3d0c9;
+  --accent: #a2761c;
+  --kr: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  --en: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html, body { margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--kr);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: inherit; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.shell {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1rem 16px 1.4rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.status { color: var(--soft); margin: 2rem 0; }
+
+/* ---------- 섹션 선택 ---------- */
+.picker h1 {
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  letter-spacing: -0.015em;
+  margin: 1.2rem 0 0.4rem;
+}
+
+.lede { color: var(--soft); line-height: 1.6; margin: 0 0 1.6rem; }
+
+.notice {
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  padding: 0.75rem 1rem;
+  margin: 0 0 1.4rem;
+}
+
+.book h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--soft);
+  margin: 0 0 0.5rem;
+}
+
+.sections {
+  list-style: none;
+  margin: 0 0 1.6rem;
+  padding: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+.sections li + li { border-top: 1px solid var(--rule); }
+
+.sections a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding: 0.95rem 1rem;
+  text-decoration: none;
+  font-weight: 550;
+}
+
+.progress {
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+.sections a:hover { background: var(--bg); }
+
+/* ---------- 연습 ---------- */
+.drill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.bar { display: flex; align-items: center; gap: 0.7rem; }
+
+.back { font-size: 0.9rem; color: var(--soft); text-decoration: none; }
+.back:hover { color: var(--ink); }
+
+.mode {
+  font-size: 0.78rem;
+  font-weight: 550;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.tally {
+  margin-left: auto;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+.drill-title { margin: 0; font-size: 1rem; font-weight: 600; }
+
+.track { height: 3px; background: var(--rule); position: relative; }
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--ink);
+  transition: width 0.22s ease;
+}
+
+.card {
+  flex: 1;
+  min-height: 15rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.15rem;
+  padding: 2.2rem 1.6rem;
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:focus-visible { outline-offset: 3px; }
+
+.flag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  display: none;
+}
+
+.card.is-marked .flag { display: block; }
+
+.serial {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+/* 줄 길이는 .shell 의 max-width 로만 제한한다. 여기서 ch 로 한 번 더 조이면
+   한글은 한 글자가 2ch 라서 의도보다 절반 폭에서 꺾인다. */
+.prompt {
+  font-size: clamp(1.75rem, 6.2vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.34;
+  letter-spacing: -0.015em;
+}
+
+/* 안내 문구와 정답이 같은 격자 칸을 쓴다. 칸 높이는 둘 중 큰 쪽(정답)으로 고정된다. */
+.reveal {
+  display: grid;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--rule);
+}
+
+.reveal > * { grid-area: 1 / 1; }
+
+/* visibility 로 숨기면 자리는 그대로 두면서 화면 낭독기에도 읽히지 않는다. */
+.nudge {
+  font-size: 0.85rem;
+  color: var(--soft);
+  align-self: start;
+}
+
+.answer {
+  font-family: var(--en);
+  font-size: clamp(1.25rem, 4.4vw, 2.4rem);
+  line-height: 1.4;
+  visibility: hidden;
+}
+
+.card.is-revealed .nudge { visibility: hidden; }
+.card.is-revealed .answer { visibility: visible; }
+
+/* 좁은 화면에서는 버튼이 다음 줄로 넘어간다. */
+.actions, .row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+.btn {
+  flex: 1;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 550;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.95rem 1rem;
+  border-radius: 2px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.actions #prev { flex: 0 0 5.5rem; }
+.actions #mark { flex: 1 1 7rem; }
+.actions #next { flex: 2 1 9rem; }
+
+.btn[aria-disabled="true"] { opacity: 0.35; cursor: default; }
+
+.btn-primary { background: var(--ink); color: var(--card); }
+
+.btn-mark { color: var(--accent); border-color: var(--accent); }
+
+.btn-mark[aria-pressed="true"] { background: var(--accent); color: var(--card); }
+
+.done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.2rem 1.6rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+.done h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  letter-spacing: -0.015em;
+}
+
+.done h2:focus { outline: none; }
+
+.done p { margin: 0; color: var(--soft); line-height: 1.6; }
+
+.keys { margin: 0; font-size: 0.78rem; color: var(--soft); text-align: center; }
+
+@media (hover: none) { .keys { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
