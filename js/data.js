@@ -8,10 +8,12 @@ async function fetchText(name) {
   return res.text();
 }
 
+// 책 > 그룹(에피소드) > 섹션(장면) 세 단계다.
 function assertManifest(m) {
   const ok = m && Array.isArray(m.books) && m.books.every(b =>
-    b && b.id && b.title && Array.isArray(b.sections) && b.sections.every(s =>
-      s && s.id && s.title && s.file));
+    b && b.id && b.title && Array.isArray(b.groups) && b.groups.every(gr =>
+      gr && gr.id && gr.title && Array.isArray(gr.sections) && gr.sections.every(s =>
+        s && s.id && s.title && s.file)));
   if (!ok) throw new Error("manifest.json 형식이 올바르지 않습니다");
   return m;
 }
@@ -22,8 +24,12 @@ export async function loadManifest() {
 
 export function findSection(manifest, bookId, sectionId) {
   const book = manifest.books.find(b => b.id === bookId);
-  const section = book && book.sections.find(s => s.id === sectionId);
-  return section ? { book, section } : null;
+  if (!book) return null;
+  for (const group of book.groups) {
+    const section = group.sections.find(s => s.id === sectionId);
+    if (section) return { book, group, section };
+  }
+  return null;
 }
 
 // 헤더 없음, 탭 구분, 열 순서: 번호 / 책 / 섹션 / 한글 / 영어

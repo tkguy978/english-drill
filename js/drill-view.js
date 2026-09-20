@@ -6,11 +6,12 @@ import {
 } from "./session.js";
 import { loadProgress, saveProgress } from "./store.js";
 
-export function renderDrill({ book, section }, rows) {
+export function renderDrill({ book, group, section }, rows, { review = false } = {}) {
   const root = document.getElementById("drill");
   const $ = id => document.getElementById(id);
   const el = {
     title: $("drill-title"),
+    notice: $("drill-notice"),
     chip: $("chip"),
     tally: $("tally"),
     fill: $("fill"),
@@ -35,6 +36,17 @@ export function renderDrill({ book, section }, rows) {
     startNo: saved ? saved.no : null,
     marked: saved ? saved.marked : [],
   });
+
+  // ?mode=marked 로 들어온 경우. 다른 기기나 다른 브라우저에서 열면 표시가 없을 수 있다.
+  if (review) {
+    const reviewing = startReview(state);
+    if (reviewing === state) {
+      el.notice.textContent = "헷갈린다고 표시한 문장이 없어 전체 문장을 엽니다.";
+      el.notice.hidden = false;
+    } else {
+      state = reviewing;
+    }
+  }
 
   // 전체 한 바퀴에서의 위치. 표시한 것만 도는 동안에는 이 값을 건드리지 않는다.
   let position = null;
@@ -147,8 +159,8 @@ export function renderDrill({ book, section }, rows) {
     }
   });
 
-  document.title = `${section.title} · ${book.title} — 영어 문장 연습`;
-  el.title.textContent = `${book.title} · ${section.title}`;
+  document.title = `${group.title} ${section.title} · ${book.title} — 영어 문장 연습`;
+  el.title.textContent = `${book.title} · ${group.title} · ${section.title}`;
   root.hidden = false;
   paint();
   persist();

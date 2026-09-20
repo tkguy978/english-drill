@@ -66,24 +66,66 @@ a { color: inherit; }
   margin: 0 0 0.5rem;
 }
 
-.sections {
-  list-style: none;
-  margin: 0 0 1.6rem;
-  padding: 0;
+/* 에피소드 묶음. 연습을 시작한 묶음만 펼친 채로 시작한다. */
+.group {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 2px;
+  margin: 0 0 0.6rem;
 }
+
+.group summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.group summary::-webkit-details-marker { display: none; }
+
+.group summary::before {
+  content: "▸";
+  color: var(--soft);
+  font-size: 0.8em;
+}
+
+.group[open] summary::before { content: "▾"; }
+
+.group summary:hover { background: var(--bg); }
+
+.sections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.sections li { display: flex; align-items: stretch; }
 
 .sections li + li { border-top: 1px solid var(--rule); }
 
-.sections a {
+.section-link {
+  flex: 1;
   display: flex;
   align-items: baseline;
   gap: 0.7rem;
-  padding: 0.95rem 1rem;
+  padding: 0.95rem 1rem 0.95rem 2rem;
   text-decoration: none;
   font-weight: 550;
+}
+
+.section-link:hover { background: var(--bg); }
+
+/* 손가락으로 눌러도 빗나가지 않게 세로 44px 을 확보한다. */
+.chip-link {
+  align-self: center;
+  min-height: 2.75rem;
+  margin-right: 0.8rem;
+  padding: 0 0.7rem;
+  text-decoration: none;
 }
 
 .progress {
@@ -93,8 +135,6 @@ a { color: inherit; }
   font-variant-numeric: tabular-nums;
   color: var(--soft);
 }
-
-.sections a:hover { background: var(--bg); }
 
 /* ---------- 연습 ---------- */
 .drill {
@@ -111,6 +151,9 @@ a { color: inherit; }
 
 .chip {
   font: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.78rem;
   font-weight: 550;
   white-space: nowrap;

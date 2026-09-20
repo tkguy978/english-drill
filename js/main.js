@@ -32,7 +32,7 @@ async function boot() {
     renderPicker(manifest, { notice: "섹션 문장을 불러오지 못했습니다. 다른 섹션을 골라 주세요." });
     return;
   }
-  renderDrill(found, rows);
+  renderDrill(found, rows, { review: params.get("mode") === "marked" });
 }
 
 boot()
