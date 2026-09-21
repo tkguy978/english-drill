@@ -8,7 +8,8 @@
           "id": "s01e01",
           "title": "S01E01",
           "sections": [
-            { "id": "s01e01_01", "title": "장면 1", "file": "friends_s01e01_scene01.tsv" }
+            { "id": "s01e01_01", "title": "장면 1", "file": "friends_s01e01_scene01.tsv" },
+            { "id": "s01e01_02", "title": "장면 2", "file": "friends_s01e01_scene02.tsv" }
           ]
         }
       ]
